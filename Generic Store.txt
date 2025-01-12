@@ -1,0 +1,116 @@
+TODO LIST --> Progetto General Store
+
+- vendite di prodotti online, client server, javadoc , documentazione sul sitema
+- il client deve essere chiuso prima del server.
+
+
+INFO TECNICHE 
+- link push github → https://github.com/Leandro-Valora/General-Store.git
+- nome database → svalora_database_general_store 
+- user → svalora_ge_store
+- psw → ge_store
+
+
+
+COSA FA LO STORE ?
++ registrazione client 
+
++ Autenticazione utente password;
+ ++ messaggio accesso effettuato o fallito
+ ++ settare la password del login standizzata (lunghezza minima)
+ 
++ pagina dedicata all acquisto dei prodotti
+    ++ visione dei prodotti in tabella
+	++ richiesta acquisto prodotto
+	++ restituzione prodotto
+	
++ accesso ADMIN
++ menu ADMIN
+ ++ vedere tutti i prodotti
+ ++ vedere lista prodotti suggeriti
+ ++ eliminare prodotti suggeriti
+ ++ stoccare i nuovi prodotti
+ 
++ richiesta di mettere un nuovo prodotto con solo il nome
+ ++ messaggio di chiusura per il client
+
+
+MODELS
+- Customer (idUser, name, email, password)
+- Product (idProduct, name, price, quantity)
+- Cart (idUser, idProduct, quantity) 
+
+
++ database prodotto con id, nome, prezzo, quantità
+
+TABELLE SERVER
+- Customers
+- Products
+- CustomersProducts
+- SuggestedProduct
+
+
+QUERY SERVER
+
+CREATE TABLE Customers (
+ Id_Customer int PRIMARY KEY AUTO_INCREMENT,
+ Name VARCHAR(80) NOT NULL,
+ Surname VARCHAR(80) NOT NULL,
+ Email VARCHAR(80) NOT NULL,
+ Psw VARCHAR(80) NOT NULL,
+ Drop_address VARCHAR(80) NOT NULL,
+ City VARCHAR(40) NOT NULL,
+ Is_Admin BOOLEAN NOT NULL
+);
+
+INSERT INTO Customers (Name, Surname, Email, Psw, Drop_address, City) VALUE 
+('Simon', 'ZEUDJIO-TCHIOFO', 'simon@gmail.com', 'simoneee', 'san pancrazio 12', 'Parma');
+
+-----------------------------------------------------
+
+CREATE TABLE Products (
+ Id_Product int PRIMARY KEY AUTO_INCREMENT,
+ Name VARCHAR(200) NOT NULL, 
+ Price FLOAT(8,2) NOT NULL,
+ Quantity int(255) NOT NULL
+);
+
+INSERT INTO Products (Name, Price, Quantity) VALUES
+('Amarone della Valpolicella', '158.00', 15),
+('Barbaresco', '510.00', 30);
+
+------------------------------------------------------
+
+CREATE TABLE CustomersPurchase ( 
+Id_CustomerProd int PRIMARY KEY AUTO_INCREMENT, 
+Id_Customer int,
+Id_Product int,
+Quantity int NOT NULL,
+ CONSTRAINT fk_customer FOREIGN KEY (Id_Customer) REFERENCES Customers(Id_Customer), 
+CONSTRAINT fk_product FOREIGN KEY (Id_Product) REFERENCES Products(Id_Product),
+DataOrdine datetime DEFAULT CURRENT_TIMESTAMP 
+);
+ -- Inserimento dei dati
+ INSERT INTO CustomersProducts (Id_Customer, Id_Product, Quantity) VALUES (1, 1, 1);
+
+------------------------------------------------------
+
+CREATE TABLE SuggestedProduct (
+ Id_SuggProd int PRIMARY KEY AUTO_INCREMENT,
+ Name_Suggested VARCHAR(200) NOT NULL,
+ Data_Suggest datetime DEFAULT CURRENT_TIMESTAMP 
+
+);
+
+QUERY INTERESSANTE
+SELECT Products.Id_Product, Products.Name, CustomersPurchase.Quantity, CustomersPurchase.Id_CustomerPurchase
+FROM Products, CustomersPurchase
+WHERE CustomersPurchase.Id_Product = Products.Id_Product AND 
+Products.Name LIKE '?' AND CustomersPurchase.Id_Customer = ? ;
+
+
+SELECT CustomersPurchase.Id_Customer, Products.Name, Products.Price, CustomersPurchase.Quantity 
+FROM Products, CustomersPurchase 
+WHERE CustomersPurchase.Id_Product = Products.Id_Product AND CustomersPurchase.Id_Customer = ?;
+
+
